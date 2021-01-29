@@ -3,6 +3,7 @@ import BinaryReader from "./BinaryReader";
 import { MethodInfo } from "./Class";
 import { ConstantUtf8Info } from "./ConstantInfo";
 import ConstantPool from "./ConstantPool";
+import { InstructionLookupTable } from "./Instructions";
 
 export function NumberArraysEqual(arr1: Array<number>, arr2: Array<number>)
 {
@@ -62,4 +63,14 @@ export function GetAttributes(br: BinaryReader, cp: ConstantPool)
 	}
 
 	return attribs;
+}
+
+export default function GenerateFunctionsFromBytecode(bytecode: Array<number>)
+{
+	bytecode.forEach((b) =>
+	{
+		const inst = InstructionLookupTable[b];
+		if (inst === undefined)
+			throw `Can't handle bytecode instruction ${b}`;
+	});
 }

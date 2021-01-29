@@ -37,7 +37,8 @@ export default class Class
 	public SourceFile: string|undefined;
 	public Interfaces;
 	public Fields;
-	public Methods;
+
+	public methods;
 
 	constructor(buffer: ArrayBuffer)
 	{
@@ -60,7 +61,7 @@ export default class Class
 
 		this.Interfaces = GetInterfaces(br);
 		this.Fields = GetFields(br);
-		this.Methods = GetMethods(br, cp);
+		this.methods = GetMethods(br, cp);
 		const attribs = GetAttributes(br, cp);
 		attribs.forEach((attrib) =>
 		{
@@ -69,5 +70,19 @@ export default class Class
 			else
 				throw `${this.constructor.name} can't handle attribute of type ${attrib.constructor.name}`;
 		});
+	}
+
+	GetMethod(name: string): MethodInfo|null
+	{
+		let m: MethodInfo|null = null;
+		this.methods.forEach((currentM) =>
+		{
+			if (currentM.Name == name)
+			{
+				m = currentM;
+				return;
+			}
+		});
+		return m;
 	}
 }

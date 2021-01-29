@@ -1,7 +1,7 @@
 import BinaryReader from "./BinaryReader";
 import { ConstantUtf8Info } from "./ConstantInfo";
 import ConstantPool from "./ConstantPool";
-import { GetAttributes } from "./Util";
+import GenerateFunctionsFromBytecode, { GetAttributes } from "./Util";
 
 export interface AttributeInfo {}
 
@@ -38,7 +38,7 @@ export class CodeAttributeInfo implements AttributeInfo
 		br.ReadUint32(); // CodeAttributeInfo is a fixed size structure, we have no use for this
 		this.MaxStack = br.ReadUint16();
 		this.MaxLocals = br.ReadUint16();
-		this.Code = br.ReadBytes(br.ReadUint32());
+		this.Code = GenerateFunctionsFromBytecode(br.ReadBytes(br.ReadUint32()));
 		this.ExceptionTable = new Array<ExceptionTableEntry>();
 		const tableLength = br.ReadUint16();
 		for (let i = 0; i < tableLength; i++)
