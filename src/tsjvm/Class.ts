@@ -1,4 +1,4 @@
-import { AttributeInfo, CodeAttributeInfo } from "./AttributeInfo";
+import { AttributeInfo, CodeAttributeInfo, SourceFileAttribute } from "./AttributeInfo";
 import BinaryReader from "./BinaryReader";
 import { ConstantClassInfo, ConstantUtf8Info } from "./ConstantInfo";
 import ConstantPool from "./ConstantPool";
@@ -9,28 +9,35 @@ export class MethodInfo
 	AccessFlags;
 	Name;
 	Descriptor;
-	Attributes;
+	CodeInfo: CodeAttributeInfo|undefined;
 
 	constructor(br: BinaryReader, cp: ConstantPool)
 	{
 		this.AccessFlags = br.ReadUint16();
 		this.Name = cp.GetItem<ConstantUtf8Info>(br.ReadUint16()).Text;
 		this.Descriptor = cp.GetItem<ConstantUtf8Info>(br.ReadUint16()).Text;
-		this.Attributes = GetAttributes(br, cp);
+		const attribs = GetAttributes(br, cp);
+		attribs.forEach((attrib) =>
+		{
+			if (attrib instanceof CodeAttributeInfo)
+				this.CodeInfo = attrib;
+			else
+				throw `${this.constructor.name} can't handle attribute of type ${attrib.constructor.name}`;
+		});
 	}
 }
 
-export default class ClassFile
+export default class Class
 {
 	public MajorVersion;
 	public MinorVersion;
 	public AccessFlags;
 	public Name;
 	public SuperName;
+	public SourceFile: string|undefined;
 	public Interfaces;
 	public Fields;
 	public Methods;
-	public Attributes;
 
 	constructor(buffer: ArrayBuffer)
 	{
@@ -45,7 +52,6 @@ export default class ClassFile
 		this.MajorVersion = br.ReadUint16();
 
 		const cp = new ConstantPool(br);
-		console.log(cp);
 
 		this.AccessFlags = br.ReadUint16();
 		
@@ -55,6 +61,13 @@ export default class ClassFile
 		this.Interfaces = GetInterfaces(br);
 		this.Fields = GetFields(br);
 		this.Methods = GetMethods(br, cp);
-		this.Attributes = GetAttributes(br, cp);
+		const attribs = GetAttributes(br, cp);
+		attribs.forEach((attrib) =>
+		{
+			if (attrib instanceof SourceFileAttribute)
+				this.SourceFile = attrib.SourceFile;
+			else
+				throw `${this.constructor.name} can't handle attribute of type ${attrib.constructor.name}`;
+		});
 	}
 }

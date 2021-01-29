@@ -1,9 +1,11 @@
-import ClassFile from "./ClassFile";
+import Class from "./Class";
 
 export default class JVM
 {
+	classes = new Array<Class>();
+
 	LoadClass(buffer: ArrayBuffer)
 	{
-		console.log(new ClassFile(buffer));
+		this.classes.push(new Class(buffer));
 	}
 }

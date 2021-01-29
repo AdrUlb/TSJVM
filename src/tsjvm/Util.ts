@@ -1,6 +1,6 @@
 import { AttributeInfo, CodeAttributeInfo, LineNumberTableAttributeInfo, SourceFileAttribute } from "./AttributeInfo";
 import BinaryReader from "./BinaryReader";
-import { MethodInfo } from "./ClassFile";
+import { MethodInfo } from "./Class";
 import { ConstantUtf8Info } from "./ConstantInfo";
 import ConstantPool from "./ConstantPool";
 

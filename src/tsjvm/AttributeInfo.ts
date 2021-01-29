@@ -31,7 +31,7 @@ export class CodeAttributeInfo implements AttributeInfo
 	MaxLocals;
 	Code;
 	ExceptionTable;
-	Attributes;
+	LineNumberTable: Array<LineNumberTableEntry>|undefined;
 
 	constructor(br: BinaryReader, cp: ConstantPool)
 	{
@@ -43,7 +43,14 @@ export class CodeAttributeInfo implements AttributeInfo
 		const tableLength = br.ReadUint16();
 		for (let i = 0; i < tableLength; i++)
 			this.ExceptionTable.push(new ExceptionTableEntry(br));
-		this.Attributes = GetAttributes(br, cp);
+		const attribs = GetAttributes(br, cp);
+		attribs.forEach((attrib) =>
+		{
+			if (attrib instanceof LineNumberTableAttributeInfo)
+				this.LineNumberTable = attrib.LineNumberTable;
+			else
+				throw `${this.constructor.name} can't handle attribute of type ${attrib.constructor.name}`;
+		});
 	}
 }
 
