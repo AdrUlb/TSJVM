@@ -29,9 +29,7 @@ export default class BinaryReader
 		const arr = [];
 
 		for (let i = 0; i < count; i++)
-		{
 			arr.push(this.ReadUint8());
-		}
 
 		return arr;
 	}
