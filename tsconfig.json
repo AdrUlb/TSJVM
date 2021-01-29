@@ -1,0 +1,21 @@
+{
+	"compilerOptions":
+	{
+		"module": "ES6",
+		"target": "ES5",
+		"jsx": "react",
+		"strict": true,
+		"sourceMap": true,
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		"experimentalDecorators": true,
+		"incremental": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"outDir": "./dist",
+	},
+	"include": [
+		"./src/**/*"
+	]
+}
