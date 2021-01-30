@@ -65,12 +65,23 @@ export function GetAttributes(br: BinaryReader, cp: ConstantPool)
 	return attribs;
 }
 
-export default function GenerateFunctionsFromBytecode(bytecode: Array<number>)
+export default function BytecodeDecoder(bytecode: Array<number>)
 {
+	function UnknownOpcode(b: number)
+	{
+		throw `Can't handle bytecode instruction ${b}`;
+	}
+
+	const insts = new Array<Function>();
+
 	bytecode.forEach((b) =>
 	{
-		const inst = InstructionLookupTable[b];
+		let inst = InstructionLookupTable[b];
 		if (inst === undefined)
-			throw `Can't handle bytecode instruction ${b}`;
+			inst = () => UnknownOpcode(b);
+
+		insts.push(inst);
 	});
+
+	return insts;
 }

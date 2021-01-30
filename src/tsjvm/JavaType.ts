@@ -5,16 +5,7 @@ abstract class JavaType
 	Value: any;
 }
 
-abstract class JavaNumericType extends JavaType
-{
-	readonly MinValue: any;
-	readonly MaxValue: any;
-	readonly DefaultValue: any;
-
-	Value: any;
-}
-
-abstract class JavaIntegralType implements JavaNumericType
+abstract class JavaIntegralType implements JavaType
 {
 	readonly MinValue: bigint = 0n;
 	readonly MaxValue: bigint = 0n;
@@ -65,4 +56,51 @@ export class JavaChar extends JavaIntegralType
 {
 	readonly MinValue = 0n;
 	readonly MaxValue = 65535n;
+}
+
+abstract class JavaDouble implements JavaType
+{
+	readonly DefaultValue = 0;
+
+	private value = 0;
+
+	get Value()
+	{
+		return this.value;
+	}
+
+	set Value(value)
+	{
+		this.value = value;
+	}
+}
+
+export class JavaFloat extends JavaDouble
+{
+	get Value()
+	{
+		return super.Value;
+	}
+	
+	set Value(value)
+	{
+		super.Value = Math.fround(value);
+	}
+}
+
+export class JavaReturnAddress
+{
+	// TODO: implement
+}
+
+export class JavaBoolean implements JavaType
+{
+	readonly DefaultValue: boolean = false;
+
+	Value = this.DefaultValue;
+}
+
+export class JavaReference
+{
+	// TODO: Implement
 }
