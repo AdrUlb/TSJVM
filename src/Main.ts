@@ -1,11 +1,11 @@
 import Frame from "./tsjvm/Frame";
-import { JavaInt } from "./tsjvm/JavaType";
+import { JavaByte } from "./tsjvm/JavaType";
 import JVM from "./tsjvm/JVM";
 
 function Main()
 {
-	const x = new JavaInt();
-	x.Value = -2147483648n-2n;
+	const x = new JavaByte();
+	x.Value = -128n-1n;
 	console.log(x.Value);
 
 	const addClassFile = require("./tests/00-add/Add.class");

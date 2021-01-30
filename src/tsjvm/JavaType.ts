@@ -1,11 +1,11 @@
-interface JavaType
+abstract class JavaType
 {
 	readonly DefaultValue: any;
-
+	
 	Value: any;
 }
 
-interface JavaNumericType extends JavaType
+abstract class JavaNumericType extends JavaType
 {
 	readonly MinValue: any;
 	readonly MaxValue: any;
@@ -14,127 +14,55 @@ interface JavaNumericType extends JavaType
 	Value: any;
 }
 
-interface JavaIntegralType extends JavaNumericType
+abstract class JavaIntegralType implements JavaNumericType
 {
-	readonly MinValue: BigInt;
-	readonly MaxValue: BigInt;
-	readonly DefaultValue: BigInt;
+	readonly MinValue: bigint = 0n;
+	readonly MaxValue: bigint = 0n;
+	readonly DefaultValue: bigint = 0n;
 
-	Value: BigInt;
+	private value: bigint = this.DefaultValue;
+
+	get Value()
+	{
+		return this.value + this.MinValue;
+	}
+
+	set Value(value)
+	{
+		value -= this.MinValue;
+		const unsignedMax = this.MaxValue - this.MinValue;
+		value &= unsignedMax;
+
+		this.value = value;
+	}
 }
 
-export class JavaByte implements JavaIntegralType
+export class JavaByte extends JavaIntegralType
 {
 	readonly MinValue = -128n;
 	readonly MaxValue = 127n;
-	readonly DefaultValue = 0n;
-
-	private value = this.DefaultValue;
-
-	get Value()
-	{
-		return this.value;
-	}
-
-	set Value(value)
-	{
-		if (value > this.MaxValue)
-		{
-			const over = this.MaxValue - value + 1n;
-			value = this.MinValue - over;
-		}
-		else if (value < this.MinValue)
-		{
-			const under = this.MinValue - value - 1n;
-			value = this.MaxValue - under;
-		}
-		this.value = value;
-	}
 }
 
-export class JavaShort implements JavaIntegralType
+export class JavaShort extends JavaIntegralType
 {
-	MinValue = -32768n;
-	MaxValue = 32767n;
-	DefaultValue = 0n;
-
-	private value = this.DefaultValue;
-
-	get Value()
-	{
-		return this.value;
-	}
-
-	set Value(value)
-	{
-		if (value > this.MaxValue)
-		{
-			const over = this.MaxValue - value + 1n;
-			value = this.MinValue - over;
-		}
-		else if (value < this.MinValue)
-		{
-			const under = this.MinValue - value - 1n;
-			value = this.MaxValue - under;
-		}
-		this.value = value;
-	}
+	readonly MinValue = -32768n;
+	readonly MaxValue = 32767n;
 }
 
-export class JavaInt implements JavaIntegralType
+export class JavaInt extends JavaIntegralType
 {
-	MinValue = -2147483648n;
-	MaxValue = 2147483647n;
-	DefaultValue = 0n;
-
-	private value = this.DefaultValue;
-
-	get Value()
-	{
-		return this.value;
-	}
-
-	set Value(value)
-	{
-		if (value > this.MaxValue)
-		{
-			const over = this.MaxValue - value + 1n;
-			value = this.MinValue - over;
-		}
-		else if (value < this.MinValue)
-		{
-			const under = this.MinValue - value - 1n;
-			value = this.MaxValue - under;
-		}
-		this.value = value;
-	}
+	readonly MinValue = -2147483648n;
+	readonly MaxValue = 2147483647n;
 }
 
-export class JavaLong implements JavaIntegralType
+export class JavaLong extends JavaIntegralType
 {
-	MinValue = -9223372036854775808n;
-	MaxValue = 9223372036854775807n;
-	DefaultValue = 0n;
+	readonly MinValue = -9223372036854775808n;
+	readonly MaxValue = 9223372036854775807n;
+}
 
-	private value = this.DefaultValue;
-
-	get Value()
-	{
-		return this.value;
-	}
-
-	set Value(value)
-	{
-		if (value > this.MaxValue)
-		{
-			const over = this.MaxValue - value + 1n;
-			value = this.MinValue - over;
-		}
-		else if (value < this.MinValue)
-		{
-			const under = this.MinValue - value - 1n;
-			value = this.MaxValue - under;
-		}
-		this.value = value;
-	}
+export class JavaChar extends JavaIntegralType
+{
+	readonly MinValue = 0n;
+	readonly MaxValue = 65535n;
 }
